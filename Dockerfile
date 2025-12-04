@@ -1,10 +1,11 @@
 FROM httpd:latest
 
-# Install envsubst (template engine)
-RUN apt-get update && apt-get install -y gettext-base
+RUN apt-get update && apt-get install -y gettext-base postgresql-client
 
-# Copy template file instead of static HTML
 COPY ./src/index.html.template /usr/local/apache2/htdocs/index.html.template
+COPY db_fetch.sh /db_fetch.sh
 
-# Replace environment variables at container startup
-CMD envsubst < /usr/local/apache2/htdocs/index.html.template > /usr/local/apache2/htdocs/index.html && httpd-foreground
+RUN chmod +x /db_fetch.sh
+
+CMD ["/db_fetch.sh"]
+
