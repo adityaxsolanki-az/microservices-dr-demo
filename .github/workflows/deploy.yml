@@ -1,0 +1,72 @@
+name: Deploy Microservice DR Multi-Region
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+
+  # -----------------------------
+  # DEPLOY TO MUMBAI (PRIMARY)
+  # -----------------------------
+  deploy-mumbai:
+    name: Deploy to Mumbai (Primary Region)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Mumbai EC2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_MUMBAI_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd microservices-dr-demo
+            git pull
+
+            sudo docker rm -f microservice-mumbai || true
+            sudo docker build --no-cache -t microservice-mumbai .
+
+            sudo docker run -d \
+              --env-file .env \
+              -p 80:80 \
+              --name microservice-mumbai \
+              microservice-mumbai
+
+            echo "Mumbai Deployment Successful!"
+
+  # -----------------------------
+  # DEPLOY TO HYDERABAD (DR)
+  # -----------------------------
+  deploy-hyderabad:
+    name: Deploy to Hyderabad (DR Region)
+    runs-on: ubuntu-latest
+    needs: deploy-mumbai   # Run only if Mumbai deployment succeeds
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Hyderabad EC2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HYD_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd microservices-dr-demo
+            git pull
+
+            sudo docker rm -f microservice-hyd || true
+            sudo docker build --no-cache -t microservice-hyd .
+
+            sudo docker run -d \
+              --env-file .env \
+              -p 80:80 \
+              --name microservice-hyd \
+              microservice-hyd
+
+            echo "Hyderabad Deployment Successful!"
