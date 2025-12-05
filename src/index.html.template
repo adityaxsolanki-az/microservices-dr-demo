@@ -25,11 +25,11 @@
 <div class="box">
   <h2>Current Status</h2>
   <p><b>Region:</b> $REGION</p>
-  <p><b>Latest Message:</b> {{ DB_MESSAGE }}</p>
-  <p><b>Written At:</b> {{ DB_TIMESTAMP }}</p>
-  <p><b>Current Time:</b> {{ NOW }}</p>
-  <p><b>RPO Lag:</b> {{ RPO_LAG }} seconds</p>
-  <p><b>Sync Status:</b> {{ SYNC_STATUS }}</p>
+  <p><b>Latest Message:</b> $DB_MESSAGE</p>
+  <p><b>Written At:</b> $DB_TIMESTAMP</p>
+  <p><b>Current Time:</b> $NOW</p>
+  <p><b>RPO Lag:</b> $RPO_LAG seconds</p>
+  <p><b>Sync Status:</b> $SYNC_STATUS</p>
 </div>
 
 </body>
