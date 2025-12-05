@@ -1,11 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Microservice DR Demo</title>
+    <title>Microservice DR Dashboard</title>
+    <style>
+        body { font-family: Arial; margin: 30px; }
+        .box { padding: 15px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; }
+        .green { color: green; font-weight: bold; }
+        .yellow { color: orange; font-weight: bold; }
+        .red { color: red; font-weight: bold; }
+    </style>
 </head>
 <body>
-    <h1>Microservice Running Successfully</h1>
-    <p>Region: $REGION</p>
-    <p>Latest DB Message: {{ DB_MESSAGE }}</p>
+
+<h1>Microservice DR Monitoring Dashboard</h1>
+
+<div class="box">
+  <h2>Submit a Message</h2>
+  <form action="/write" method="GET">
+      <input type="text" name="msg" placeholder="Type a message..." required>
+      <button type="submit">Send</button>
+  </form>
+</div>
+
+<div class="box">
+  <h2>Current Status</h2>
+  <p><b>Region:</b> $REGION</p>
+  <p><b>Latest Message:</b> {{ DB_MESSAGE }}</p>
+  <p><b>Written At:</b> {{ DB_TIMESTAMP }}</p>
+  <p><b>Current Time:</b> {{ NOW }}</p>
+  <p><b>RPO Lag:</b> {{ RPO_LAG }} seconds</p>
+  <p><b>Sync Status:</b> {{ SYNC_STATUS }}</p>
+</div>
+
 </body>
 </html>
